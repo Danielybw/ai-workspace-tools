@@ -139,6 +139,65 @@ async function handleMinutes(req, res) {
   });
 }
 
+
+async function handleResume(req, res) {
+  if (req.method !== "POST") { res.writeHead(405); res.end('{"error":"Method not allowed"}'); return; }
+  let body = "";
+  req.on("data", c => { body += c; });
+  req.on("end", async () => {
+    try {
+      const { content } = JSON.parse(body);
+      if (!content || !content.trim()) { res.writeHead(400); res.end('{"error":"请输入简历内容"}'); return; }
+      const sys = "你是资深HR和简历优化专家。用STAR法则重写简历，突出量化成果，强动词开头。直接输出优化后简历。";
+      const r = await openai.chat.completions.create({
+        model: "qwen-plus", messages: [{role:"system",content:sys},{role:"user",content}],
+        temperature: 0.5, max_tokens: 3000,
+      });
+      res.writeHead(200, {"Content-Type":"application/json; charset=utf-8"});
+      res.end(JSON.stringify({ result: r.choices[0]?.message?.content || "" }));
+    } catch (err) { console.error(err); res.writeHead(500); res.end('{"error":"生成失败"}'); }
+  });
+}
+
+async function handleTranslate(req, res) {
+  if (req.method !== "POST") { res.writeHead(405); res.end('{"error":"Method not allowed"}'); return; }
+  let body = "";
+  req.on("data", c => { body += c; });
+  req.on("end", async () => {
+    try {
+      const { content, mode } = JSON.parse(body);
+      if (!content || !content.trim()) { res.writeHead(400); res.end('{"error":"请输入内容"}'); return; }
+      const isZh2En = mode === "zh2en";
+      const sys = isZh2En ? "中译英专家。翻译成地道英文，不要直译。只输出译文。" : "英译中专家。翻译成流畅中文，不要直译。只输出译文。";
+      const r = await openai.chat.completions.create({
+        model: "qwen-plus", messages: [{role:"system",content:sys},{role:"user",content}],
+        temperature: 0.3, max_tokens: 4000,
+      });
+      res.writeHead(200, {"Content-Type":"application/json; charset=utf-8"});
+      res.end(JSON.stringify({ result: r.choices[0]?.message?.content || "" }));
+    } catch (err) { console.error(err); res.writeHead(500); res.end('{"error":"翻译失败"}'); }
+  });
+}
+
+async function handleAnalyze(req, res) {
+  if (req.method !== "POST") { res.writeHead(405); res.end('{"error":"Method not allowed"}'); return; }
+  let body = "";
+  req.on("data", c => { body += c; });
+  req.on("end", async () => {
+    try {
+      const { content } = JSON.parse(body);
+      if (!content || !content.trim()) { res.writeHead(400); res.end('{"error":"请输入数据"}'); return; }
+      const sys = "你是资深数据分析师。分析数据输出报告：数据概览、关键发现(3-5条)、趋势分析、异常检测、行动建议。直接输出报告。";
+      const r = await openai.chat.completions.create({
+        model: "qwen-plus", messages: [{role:"system",content:sys},{role:"user",content}],
+        temperature: 0.5, max_tokens: 2500,
+      });
+      res.writeHead(200, {"Content-Type":"application/json; charset=utf-8"});
+      res.end(JSON.stringify({ result: r.choices[0]?.message?.content || "" }));
+    } catch (err) { console.error(err); res.writeHead(500); res.end('{"error":"分析失败"}'); }
+  });
+}
+
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -146,6 +205,9 @@ const server = http.createServer((req, res) => {
   if (req.method === "OPTIONS") { res.writeHead(204); res.end(); return; }
   if (req.url === "/api/generate") return handleGenerate(req, res);
   if (req.url === "/api/minutes") return handleMinutes(req, res);
+  if (req.url === "/api/resume") return handleResume(req, res);
+  if (req.url === "/api/translate") return handleTranslate(req, res);
+  if (req.url === "/api/analyze") return handleAnalyze(req, res);
   serveStatic(req, res);
 });
 

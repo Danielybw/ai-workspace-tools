@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI周报生成器 - 智能工作汇报助手</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f5f5f7;color:#1d1d1f;line-height:1.6;min-height:100vh}
+.container{max-width:600px;margin:0 auto;padding:20px 16px 40px}
+
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px;border-bottom:1px solid #e5e5ea;margin-bottom:16px}
+.nav-bar a{font-size:13px;color:#0071e3;text-decoration:none}
+.nav-bar .brand{font-weight:700;font-size:15px}
+
+.header{text-align:center;padding:20px 0 8px}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .subtitle{font-size:13px;color:#86868b}
+.header .date-badge{display:inline-block;background:#0071e3;color:#fff;font-size:12px;padding:2px 10px;border-radius:10px;margin-top:6px;font-weight:500}
+
+.usage-bar{background:#fff;border:1px solid #e5e5ea;border-radius:10px;padding:12px 14px;margin-top:16px;display:flex;align-items:center;justify-content:space-between}
+.usage-bar .remaining{font-size:13px;color:#1d1d1f}
+.usage-bar .remaining span{font-weight:700;color:#0071e3}
+.usage-bar .dots{display:flex;gap:4px}
+.usage-bar .dot{width:8px;height:8px;border-radius:50%;background:#e5e5ea}
+.usage-bar .dot.used{background:#0071e3}
+.usage-bar .dot.free{background:#e5e5ea}
+
+.input-section{margin-top:16px}
+.input-label{font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+textarea{width:100%;min-height:180px;border:1.5px solid #d2d2d7;border-radius:12px;padding:14px;font-size:15px;font-family:inherit;line-height:1.8;resize:vertical;background:#fff;transition:border-color .2s;outline:none}
+textarea:focus{border-color:#0071e3}
+textarea::placeholder{color:#aeaeb2}
+.char-count{text-align:right;font-size:12px;color:#aeaeb2;margin-top:4px}
+
+.style-section{margin-top:16px}
+.style-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.style-card{border:1.5px solid #d2d2d7;border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .2s;background:#fff;user-select:none}
+.style-card:hover{border-color:#0071e3}
+.style-card.active{border-color:#0071e3;background:#f0f7ff}
+.style-card .style-icon{font-size:24px;margin-bottom:4px}
+.style-card .style-name{font-size:13px;font-weight:600}
+.style-card .style-desc{font-size:11px;color:#86868b;margin-top:2px}
+
+.btn-section{margin-top:20px}
+.btn-generate{width:100%;padding:14px;font-size:16px;font-weight:600;border:none;border-radius:12px;background:#0071e3;color:#fff;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-generate:active{transform:scale(.98)}
+.btn-generate:disabled{background:#a1c4e9;cursor:not-allowed}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-generate.loading .spinner{display:block}
+.btn-generate.loading .btn-text{display:none}
+
+.result-section{margin-top:24px;display:none}
+.result-section.visible{display:block}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.result-header .label{font-size:14px;font-weight:600}
+.btn-copy{padding:6px 14px;font-size:13px;font-weight:500;border:1px solid #0071e3;border-radius:8px;background:#fff;color:#0071e3;cursor:pointer;transition:all .2s}
+.btn-copy.copied{background:#34c759;color:#fff;border-color:#34c759}
+.result-content{background:#fff;border:1px solid #e5e5ea;border-radius:12px;padding:20px;font-size:14px;line-height:1.9;white-space:pre-wrap;word-break:break-word}
+
+.upgrade-prompt{display:none;margin-top:20px}
+.upgrade-prompt.visible{display:block}
+.upgrade-card{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:14px;padding:24px 20px;text-align:center;color:#fff}
+.upgrade-card h3{font-size:18px;margin-bottom:6px}
+.upgrade-card p{font-size:13px;opacity:.9;margin-bottom:16px;line-height:1.6}
+.upgrade-features{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.upgrade-feature{background:rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;font-size:12px}
+.btn-upgrade{display:inline-block;padding:12px 32px;font-size:15px;font-weight:600;background:#fff;color:#764ba2;border-radius:10px;text-decoration:none;transition:all .2s}
+.btn-upgrade:active{transform:scale(.96)}
+
+.donation-section{margin-top:28px;display:none}
+.donation-section.visible{display:block}
+.donation-card{background:#fff;border-radius:14px;padding:20px;text-align:center;border:1px solid #e5e5ea}
+.donation-card .coffee{font-size:36px;margin-bottom:8px}
+.donation-card .title{font-size:16px;font-weight:700;margin-bottom:4px}
+.donation-card .sub{font-size:13px;color:#86868b;margin-bottom:16px}
+.qr-row{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+.qr-item{text-align:center}
+.qr-item img{width:140px;height:140px;border-radius:8px;border:1px solid #e5e5ea}
+.qr-item .qr-label{font-size:12px;color:#86868b;margin-top:6px}
+.donation-amounts{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.amount-tag{padding:4px 12px;background:#f5f5f7;border-radius:6px;font-size:12px;color:#86868b}
+
+.error-msg{background:#fff2f0;border:1px solid #ffccc7;border-radius:10px;padding:12px 16px;font-size:14px;color:#cf1322;margin-top:16px;display:none}
+.error-msg.visible{display:block}
+.footer{text-align:center;padding:32px 0 20px;font-size:12px;color:#aeaeb2}
+</style>
+</head>
+<body>
+<div class="container">
+  <nav class="nav-bar">
+    <span class="brand">🤖 AI工作助手</span>
+    <a href="/">← 返回首页</a>
+  </nav>
+
+  <div class="header">
+    <h1>📝 AI 周报生成器</h1>
+    <div class="subtitle">输入工作要点，30秒生成专业周报</div>
+  </div>
+
+  <div class="usage-bar" id="usageBar">
+    <div class="remaining">今日剩余：<span id="remainingCount">3</span> 次</div>
+    <div class="dots" id="usageDots">
+      <div class="dot free"></div><div class="dot free"></div><div class="dot free"></div>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <div class="input-label">📋 输入本周工作内容</div>
+    <textarea id="inputContent" placeholder="可以简单罗列你本周做了什么：&#10;&#10;• 完成了用户登录模块的开发&#10;• 和设计团队对齐了下个迭代的需求&#10;• 修复了3个线上Bug&#10;• 整理了技术文档&#10;&#10;不用写得很完整，AI会帮你润色~"></textarea>
+    <div class="char-count"><span id="charCount">0</span> 字</div>
+  </div>
+
+  <div class="style-section">
+    <div class="input-label">🎨 选择汇报风格</div>
+    <div class="style-grid" id="styleGrid">
+      <div class="style-card active" data-style="professional">
+        <div class="style-icon">💼</div><div class="style-name">专业汇报</div><div class="style-desc">标准职场风</div>
+      </div>
+      <div class="style-card" data-style="result">
+        <div class="style-icon">🎯</div><div class="style-name">成果导向</div><div class="style-desc">突出关键成果</div>
+      </div>
+      <div class="style-card" data-style="concise">
+        <div class="style-icon">⚡</div><div class="style-name">极简高效</div><div class="style-desc">5句话以内</div>
+      </div>
+      <div class="style-card" data-style="tech">
+        <div class="style-icon">💻</div><div class="style-name">技术风格</div><div class="style-desc">适合程序员</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-section">
+    <button class="btn-generate" id="btnGenerate" onclick="generate()">
+      <span class="spinner"></span><span class="btn-text">✨ 一键生成周报</span>
+    </button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="result-section" id="resultSection">
+    <div class="result-header">
+      <span class="label">📄 生成的周报</span>
+      <button class="btn-copy" id="btnCopy" onclick="copyResult()">📋 一键复制</button>
+    </div>
+    <div class="result-content" id="resultContent"></div>
+  </div>
+
+  <div class="upgrade-prompt" id="upgradePrompt">
+    <div class="upgrade-card">
+      <h3>🚀 免费额度已用完</h3>
+      <p>升级会员，解锁无限次数 + 全部AI工具</p>
+      <div class="upgrade-features">
+        <span class="upgrade-feature">✅ 不限次数</span>
+        <span class="upgrade-feature">🎨 全部风格</span>
+        <span class="upgrade-feature">📊 会议纪要</span>
+        <span class="upgrade-feature">💾 历史记录</span>
+      </div>
+      <a href="https://afdian.com" target="_blank" class="btn-upgrade">
+        ¥9.9/月 立即订阅
+      </a>
+    </div>
+  </div>
+
+  <div class="donation-section" id="donationSection">
+    <div class="donation-card">
+      <div class="coffee">☕️</div>
+      <div class="title">觉得好用？赞赏支持</div>
+      <div class="sub">持续更新的动力来自你的支持</div>
+      <div class="qr-row">
+        <div class="qr-item">
+          <img src="qr-payment.jpg" alt="赞赏码">
+          <div class="qr-label">扫码赞赏</div>
+        </div>
+      </div>
+      <div class="donation-amounts">
+        <span class="amount-tag">¥6.6</span><span class="amount-tag">¥9.9</span><span class="amount-tag">¥18.8</span><span class="amount-tag">随缘</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">AI 生成内容仅供参考，请自行审阅修改 · 数据仅用于生成，不会存储</div>
+</div>
+
+<script>
+var currentStyle = 'professional';
+var FREE_LIMIT = 3;
+var usedCount = parseInt(localStorage.getItem('weekly_used') || '0');
+var todayDate = new Date().toDateString();
+var storedDate = localStorage.getItem('weekly_date');
+
+if (storedDate !== todayDate) {
+  usedCount = 0;
+  localStorage.setItem('weekly_date', todayDate);
+}
+
+updateUsageUI();
+
+function updateUsageUI() {
+  var remaining = Math.max(0, FREE_LIMIT - usedCount);
+  document.getElementById('remainingCount').textContent = remaining;
+  var dots = document.querySelectorAll('#usageDots .dot');
+  dots.forEach(function(d, i) {
+    d.className = 'dot ' + (i < usedCount ? 'used' : 'free');
+  });
+
+  if (usedCount >= FREE_LIMIT) {
+    document.getElementById('btnGenerate').disabled = true;
+    document.getElementById('btnGenerate').style.opacity = '0.5';
+    document.getElementById('upgradePrompt').classList.add('visible');
+  }
+}
+
+document.getElementById('styleGrid').addEventListener('click', function(e) {
+  var card = e.target.closest('.style-card');
+  if (!card) return;
+  document.querySelectorAll('.style-card').forEach(function(c) { c.classList.remove('active'); });
+  card.classList.add('active');
+  currentStyle = card.dataset.style;
+});
+
+document.getElementById('inputContent').addEventListener('input', function() {
+  document.getElementById('charCount').textContent = this.value.length;
+});
+
+async function generate() {
+  var content = document.getElementById('inputContent').value.trim();
+  var btn = document.getElementById('btnGenerate');
+  var errorEl = document.getElementById('errorMsg');
+
+  if (!content) { showError('请输入你的工作内容~'); return; }
+  if (content.length < 10) { showError('内容太短啦，多写几个要点效果更好哦~'); return; }
+  if (usedCount >= FREE_LIMIT) { return; }
+
+  errorEl.classList.remove('visible');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+    var resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: content, style: currentStyle }),
+    });
+    var data = await resp.json();
+    if (data.error) { showError(data.error); btn.classList.remove('loading'); btn.disabled = false; return; }
+
+    document.getElementById('resultContent').textContent = data.result;
+    document.getElementById('resultSection').classList.add('visible');
+    document.getElementById('donationSection').classList.add('visible');
+    document.getElementById('btnCopy').classList.remove('copied');
+    document.getElementById('btnCopy').textContent = '📋 一键复制';
+
+    usedCount++;
+    localStorage.setItem('weekly_used', usedCount);
+    updateUsageUI();
+
+    document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (err) {
+    showError('网络异常，请检查网络后重试');
+  } finally {
+    btn.classList.remove('loading');
+    if (usedCount < FREE_LIMIT) btn.disabled = false;
+  }
+}
+
+function copyResult() {
+  var text = document.getElementById('resultContent').textContent;
+  var btn = document.getElementById('btnCopy');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.classList.add('copied'); btn.textContent = '✅ 已复制';
+      setTimeout(function() { btn.classList.remove('copied'); btn.textContent = '📋 一键复制'; }, 2000);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.classList.add('copied'); btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.classList.remove('copied'); btn.textContent = '📋 一键复制'; }, 2000);
+  }
+}
+
+function showError(msg) {
+  var el = document.getElementById('errorMsg');
+  el.textContent = msg; el.classList.add('visible');
+  setTimeout(function() { el.classList.remove('visible'); }, 4000);
+}
+</script>
+</body>
+</html>

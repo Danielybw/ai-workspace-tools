@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI会议纪要生成器</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f5f5f7;color:#1d1d1f;line-height:1.6;min-height:100vh}
+.container{max-width:600px;margin:0 auto;padding:20px 16px 40px}
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px;border-bottom:1px solid #e5e5ea;margin-bottom:16px}
+.nav-bar a{font-size:13px;color:#0071e3;text-decoration:none}
+.nav-bar .brand{font-weight:700;font-size:15px}
+.header{text-align:center;padding:20px 0 8px}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .subtitle{font-size:13px;color:#86868b}
+.usage-bar{background:#fff;border:1px solid #e5e5ea;border-radius:10px;padding:12px 14px;margin-top:16px;display:flex;align-items:center;justify-content:space-between}
+.usage-bar .remaining{font-size:13px}
+.usage-bar .remaining span{font-weight:700;color:#0071e3}
+.usage-bar .dots{display:flex;gap:4px}
+.usage-bar .dot{width:8px;height:8px;border-radius:50%;background:#e5e5ea}
+.usage-bar .dot.used{background:#0071e3}
+.input-section{margin-top:16px}
+.input-label{font-size:14px;font-weight:600;margin-bottom:8px}
+textarea{width:100%;min-height:200px;border:1.5px solid #d2d2d7;border-radius:12px;padding:14px;font-size:15px;font-family:inherit;line-height:1.8;resize:vertical;background:#fff;outline:none}
+textarea:focus{border-color:#0071e3}
+textarea::placeholder{color:#aeaeb2}
+.char-count{text-align:right;font-size:12px;color:#aeaeb2;margin-top:4px}
+.btn-section{margin-top:20px}
+.btn-generate{width:100%;padding:14px;font-size:16px;font-weight:600;border:none;border-radius:12px;background:#764ba2;color:#fff;cursor:pointer}
+.btn-generate:active{transform:scale(.98)}
+.btn-generate:disabled{background:#c4b5d4;cursor:not-allowed}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-generate.loading .spinner{display:block}
+.btn-generate.loading span{display:none}
+.result-section{margin-top:24px;display:none}
+.result-section.visible{display:block}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.result-header .label{font-size:14px;font-weight:600}
+.btn-copy{padding:6px 14px;font-size:13px;font-weight:500;border:1px solid #764ba2;border-radius:8px;background:#fff;color:#764ba2;cursor:pointer}
+.btn-copy.copied{background:#34c759;color:#fff;border-color:#34c759}
+.result-content{background:#fff;border:1px solid #e5e5ea;border-radius:12px;padding:20px;font-size:14px;line-height:1.9;white-space:pre-wrap;word-break:break-word}
+.upgrade-prompt{display:none;margin-top:20px}
+.upgrade-prompt.visible{display:block}
+.upgrade-card{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:14px;padding:24px 20px;text-align:center;color:#fff}
+.upgrade-card h3{font-size:18px;margin-bottom:6px}
+.upgrade-card p{font-size:13px;opacity:.9;margin-bottom:16px}
+.upgrade-features{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.upgrade-feature{background:rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;font-size:12px}
+.btn-upgrade{display:inline-block;padding:12px 32px;font-size:15px;font-weight:600;background:#fff;color:#764ba2;border-radius:10px;text-decoration:none}
+.error-msg{background:#fff2f0;border:1px solid #ffccc7;border-radius:10px;padding:12px 16px;font-size:14px;color:#cf1322;margin-top:16px;display:none}
+.error-msg.visible{display:block}
+.footer{text-align:center;padding:32px 0 20px;font-size:12px;color:#aeaeb2}
+</style>
+</head>
+<body>
+<div class="container">
+  <nav class="nav-bar">
+    <span class="brand">🤖 AI工作助手</span>
+    <a href="/">← 返回首页</a>
+  </nav>
+
+  <div class="header">
+    <h1>🎙️ AI 会议纪要生成器</h1>
+    <div class="subtitle">输入会议记录，一键生成标准纪要</div>
+  </div>
+
+  <div class="usage-bar" id="usageBar">
+    <div class="remaining">今日剩余：<span id="remainingCount">3</span> 次</div>
+    <div class="dots" id="usageDots">
+      <div class="dot free"></div><div class="dot free"></div><div class="dot free"></div>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <div class="input-label">🎤 粘贴会议记录</div>
+    <textarea id="inputContent" placeholder="把你会议中记的笔记粘贴到这里：&#10;&#10;参会人：张三、李四、王五&#10;议题：Q2产品规划讨论&#10;&#10;张三：建议优先做用户增长功能...&#10;李四：数据看板上周DAU下降5%...&#10;王五：设计资源下周可以排期...&#10;&#10;结论：优先做数据看板优化，下周设计出稿&#10;&#10;流水账、语音转文字、自己记的要点都行，AI会整理成标准会议纪要格式~"></textarea>
+    <div class="char-count"><span id="charCount">0</span> 字</div>
+  </div>
+
+  <div class="btn-section">
+    <button class="btn-generate" id="btnGenerate" onclick="generate()">
+      <span class="spinner"></span><span>✨ 生成会议纪要</span>
+    </button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="result-section" id="resultSection">
+    <div class="result-header">
+      <span class="label">📋 生成的会议纪要</span>
+      <button class="btn-copy" id="btnCopy" onclick="copyResult()">📋 一键复制</button>
+    </div>
+    <div class="result-content" id="resultContent"></div>
+  </div>
+
+  <div class="upgrade-prompt" id="upgradePrompt">
+    <div class="upgrade-card">
+      <h3>🚀 免费额度已用完</h3>
+      <p>升级会员，解锁无限次数 + 全部AI工具</p>
+      <div class="upgrade-features">
+        <span class="upgrade-feature">✅ 不限次数</span>
+        <span class="upgrade-feature">🎨 全部工具</span>
+        <span class="upgrade-feature">📊 自动润色</span>
+        <span class="upgrade-feature">💾 历史记录</span>
+      </div>
+      <a href="https://afdian.com" target="_blank" class="btn-upgrade">
+        ¥9.9/月 立即订阅
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">AI 生成内容仅供参考 · 数据仅用于生成，不会存储</div>
+</div>
+
+<script>
+var FREE_LIMIT = 3;
+var usedCount = parseInt(localStorage.getItem('minutes_used') || '0');
+var todayDate = new Date().toDateString();
+var storedDate = localStorage.getItem('minutes_date');
+if (storedDate !== todayDate) { usedCount = 0; localStorage.setItem('minutes_date', todayDate); }
+updateUI();
+
+function updateUI() {
+  var r = Math.max(0, FREE_LIMIT - usedCount);
+  document.getElementById('remainingCount').textContent = r;
+  document.querySelectorAll('#usageDots .dot').forEach(function(d,i){ d.className='dot '+(i<usedCount?'used':'free'); });
+  if (usedCount >= FREE_LIMIT) { document.getElementById('btnGenerate').disabled=true; document.getElementById('upgradePrompt').classList.add('visible'); }
+}
+document.getElementById('inputContent').addEventListener('input',function(){ document.getElementById('charCount').textContent=this.value.length; });
+
+async function generate() {
+  var c=document.getElementById('inputContent').value.trim(),btn=document.getElementById('btnGenerate'),err=document.getElementById('errorMsg');
+  if(!c){showError('请输入会议记录~');return}
+  if(c.length<20){showError('内容太短，多写一些会议内容效果更好哦~');return}
+  if(usedCount>=FREE_LIMIT)return;
+  err.classList.remove('visible');btn.classList.add('loading');btn.disabled=true;
+  try{
+    var r=await fetch('/api/minutes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:c})});
+    var d=await r.json();
+    if(d.error){showError(d.error);btn.classList.remove('loading');btn.disabled=false;return}
+    document.getElementById('resultContent').textContent=d.result;
+    document.getElementById('resultSection').classList.add('visible');
+    document.getElementById('btnCopy').classList.remove('copied');document.getElementById('btnCopy').textContent='📋 一键复制';
+    usedCount++;localStorage.setItem('minutes_used',usedCount);updateUI();
+    document.getElementById('resultSection').scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(e){showError('网络异常，请检查网络后重试')}
+  btn.classList.remove('loading');if(usedCount<FREE_LIMIT)btn.disabled=false;
+}
+
+function copyResult() {
+  var t=document.getElementById('resultContent').textContent,b=document.getElementById('btnCopy');
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){b.classList.add('copied');b.textContent='✅ 已复制';setTimeout(function(){b.classList.remove('copied');b.textContent='📋 一键复制'},2000)})}
+  else{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);b.classList.add('copied');b.textContent='✅ 已复制';setTimeout(function(){b.classList.remove('copied');b.textContent='📋 一键复制'},2000)}
+}
+
+function showError(m){var e=document.getElementById('errorMsg');e.textContent=m;e.classList.add('visible');setTimeout(function(){e.classList.remove('visible')},4000)}
+</script>
+</body>
+</html>

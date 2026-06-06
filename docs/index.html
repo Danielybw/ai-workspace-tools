@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI工作助手 - 智能办公工具箱</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f5f5f7;color:#1d1d1f;line-height:1.6;min-height:100vh}
+.container{max-width:600px;margin:0 auto;padding:20px 16px 40px}
+
+.hero{text-align:center;padding:40px 0 20px}
+.hero .logo{font-size:48px;margin-bottom:12px}
+.hero h1{font-size:24px;font-weight:800;margin-bottom:6px;background:linear-gradient(135deg,#0071e3,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .tagline{font-size:14px;color:#86868b;margin-bottom:20px}
+
+.pricing-bar{background:#fff;border:1px solid #e5e5ea;border-radius:12px;padding:16px;text-align:center;margin-bottom:24px}
+.pricing-bar .price{font-size:28px;font-weight:800;color:#0071e3}
+.pricing-bar .period{font-size:13px;color:#86868b}
+.pricing-bar .features{font-size:12px;color:#86868b;margin-top:6px}
+.pricing-bar .btn-subscribe{display:inline-block;margin-top:10px;padding:10px 28px;font-size:14px;font-weight:600;background:#0071e3;color:#fff;border-radius:10px;text-decoration:none}
+
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.tool-card{background:#fff;border:1px solid #e5e5ea;border-radius:14px;padding:20px 16px;text-decoration:none;color:#1d1d1f;transition:all .2s;display:block}
+.tool-card:hover{border-color:#0071e3;transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.tool-card .tool-icon{font-size:36px;margin-bottom:10px}
+.tool-card .tool-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.tool-card .tool-desc{font-size:12px;color:#86868b;line-height:1.5}
+.tool-card .tool-badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;margin-top:8px}
+.tool-card .badge-free{background:#e8f5e9;color:#2e7d32}
+.tool-card .badge-pro{background:#fff3e0;color:#e65100}
+
+.why-section{background:#fff;border-radius:14px;padding:24px 20px;border:1px solid #e5e5ea;margin-bottom:24px}
+.why-section h3{font-size:16px;font-weight:700;margin-bottom:16px;text-align:center}
+.why-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:13px;line-height:1.6}
+.why-item .why-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+
+.qr-section{text-align:center;margin-bottom:24px}
+.qr-section img{width:140px;height:140px;border-radius:8px;border:1px solid #e5e5ea}
+.qr-section .qr-text{font-size:12px;color:#86868b;margin-top:6px}
+
+.footer{text-align:center;padding:20px 0;font-size:12px;color:#aeaeb2}
+.footer a{color:#0071e3;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="logo">🧰</div>
+    <h1>AI 工作助手</h1>
+    <div class="tagline">智能办公工具箱 · AI驱动 · 效率翻倍</div>
+  </div>
+
+  <div class="pricing-bar">
+    <span class="price">免费使用</span><span class="period"> / 每工具每日3次</span>
+    <div class="features">5个AI工具 · 无需注册 · 即开即用</div>
+    <div class="share-row" style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button onclick="share('wechat')" style="padding:8px 16px;border:none;border-radius:8px;background:#07C160;color:#fff;font-size:12px;cursor:pointer">💚 分享给微信好友</button>
+      <button onclick="share('twitter')" style="padding:8px 16px;border:none;border-radius:8px;background:#1DA1F2;color:#fff;font-size:12px;cursor:pointer">🐦 分享到Twitter</button>
+      <button onclick="copyLink()" style="padding:8px 16px;border:none;border-radius:8px;background:#0071e3;color:#fff;font-size:12px;cursor:pointer">📋 复制链接</button>
+    </div>
+  </div>
+
+  <div class="tools-grid">
+    <a href="/weekly-report.html" class="tool-card">
+      <div class="tool-icon">📝</div>
+      <div class="tool-name">AI周报生成</div>
+      <div class="tool-desc">输入要点，30秒生成专业周报</div>
+      <span class="tool-badge badge-free">免费3次</span>
+    </a>
+    <a href="/meeting-minutes.html" class="tool-card">
+      <div class="tool-icon">🎙️</div>
+      <div class="tool-name">AI会议纪要</div>
+      <div class="tool-desc">会议记录一键转标准纪要</div>
+      <span class="tool-badge badge-free">免费3次</span>
+    </a>
+    <a href="/resume-optimizer.html" class="tool-card">
+      <div class="tool-icon">📄</div>
+      <div class="tool-name">AI简历优化</div>
+      <div class="tool-desc">大厂视角，STAR法则重写</div>
+      <span class="tool-badge badge-free">免费3次</span>
+    </a>
+    <a href="/translate.html" class="tool-card">
+      <div class="tool-icon">🌐</div>
+      <div class="tool-name">AI翻译润色</div>
+      <div class="tool-desc">中英互译，专业地道</div>
+      <span class="tool-badge badge-free">免费使用</span>
+    </a>
+  <a href="/data-analyze.html" class="tool-card">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name">AI数据分析</div>
+      <div class="tool-desc">上传数据，洞察趋势</div>
+      <span class="tool-badge badge-free">免费使用</span>
+    </a>
+  </div>
+
+  <div class="why-section">
+    <h3>💡 为什么用AI工作助手？</h3>
+    <div class="why-item">
+      <span class="why-icon">⚡</span>
+      <span>30秒生成专业内容，告别熬夜写报告</span>
+    </div>
+    <div class="why-item">
+      <span class="why-icon">🎯</span>
+      <span>多种风格模板，适应不同公司文化</span>
+    </div>
+    <div class="why-item">
+      <span class="why-icon">💰</span>
+      <span>每月¥9.9，一杯奶茶钱，效率提升10倍</span>
+    </div>
+    <div class="why-item">
+      <span class="why-icon">🔄</span>
+      <span>持续更新新工具，订阅用户永久享受</span>
+    </div>
+  </div>
+
+  <div class="qr-section">
+    <img src="qr-payment.jpg" alt="赞赏码">
+    <div class="qr-text">觉得好用？扫码赞赏支持</div>
+  
+  <div class="why-section" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;text-align:center">
+    <h3 style="color:#fff">🎁 邀请3个好友，解锁无限使用</h3>
+    <p style="font-size:13px;opacity:0.9;margin-bottom:12px">复制你的专属链接发给朋友，3个人打开后你永久免费</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button onclick="getReferralLink()" style="padding:10px 20px;border:none;border-radius:10px;background:#fff;color:#764ba2;font-weight:700;cursor:pointer;font-size:14px">🔗 获取专属邀请链接</button>
+    </div>
+    <div id="referralInfo" style="margin-top:10px;font-size:12px;opacity:0.8;display:none"></div>
+    <div id="referralProgress" style="margin-top:8px;font-size:13px;display:none">
+      <span id="refCount">0</span>/3 人已通过你的链接访问
+    </div>
+  </div>
+
+  </div>
+
+  <div class="footer">
+    AI生成内容仅供参考，请自行审阅修改<br>
+    <a href="https://weekly-report-ai-two.vercel.app">weekly-report-ai-two.vercel.app</a>
+  </div>
+</div>
+
+<script>
+// Simple usage tracking
+fetch('/api/track', {method:'POST',body:JSON.stringify({page:'home',t:Date.now()})}).catch(()=>{});
+</script>
+
+<script>
+function share(platform) {
+  const url = 'https://weekly-report-ai-two.vercel.app';
+  const text = '发现一个超好用的AI办公工具箱！周报生成+会议纪要+简历优化+翻译+数据分析，全免费！';
+  if (platform === 'wechat') { copyLink(); alert('链接已复制！打开微信粘贴给好友'); }
+  else if (platform === 'twitter') { window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url)); }
+}
+function copyLink() {
+  navigator.clipboard.writeText('https://weekly-report-ai-two.vercel.app').then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✅ 已复制！';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+</script>
+
+
+<script>
+function getReferralLink() {
+  var uid = localStorage.getItem('user_id');
+  if (!uid) { uid = 'u' + Date.now().toString(36); localStorage.setItem('user_id', uid); }
+  var link = 'https://weekly-report-ai-two.vercel.app?ref=' + uid;
+  navigator.clipboard.writeText(link).then(function() {
+    var info = document.getElementById('referralInfo');
+    info.style.display = 'block';
+    info.innerHTML = '✅ 专属链接已复制！<br><small style="opacity:0.7">' + link.substring(0,50) + '...</small>';
+    document.getElementById('referralProgress').style.display = 'block';
+    checkRefs(uid);
+  });
+}
+
+function checkRefs(uid) {
+  var count = parseInt(localStorage.getItem('ref_count') || '0');
+  document.getElementById('refCount').textContent = count;
+  if (count >= 3) {
+    localStorage.setItem('premium', 'true');
+    document.getElementById('referralProgress').innerHTML = '🎉 已解锁无限使用！';
+  }
+}
+
+// Check if arrived via referral
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var ref = params.get('ref');
+  if (ref && ref !== localStorage.getItem('user_id')) {
+    var count = parseInt(localStorage.getItem('ref_count') || '0');
+    localStorage.setItem('ref_count', count + 1);
+    // Track via API
+    fetch('/api/track', {method:'POST',body:JSON.stringify({ref:ref,type:'referral'})}).catch(function(){});
+  }
+  var uid = localStorage.getItem('user_id');
+  if (uid) checkRefs(uid);
+})();
+</script>
+
+</body>
+</html>

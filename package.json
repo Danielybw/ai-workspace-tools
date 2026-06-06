@@ -1,0 +1,14 @@
+{
+  "name": "crazy-ai",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "openai": "^5.0.0",
+    "playwright": "^1.60.0"
+  }
+}

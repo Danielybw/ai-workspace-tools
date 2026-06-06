@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI数据分析</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f5f5f7;color:#1d1d1f;line-height:1.6;min-height:100vh}
+.container{max-width:600px;margin:0 auto;padding:20px 16px 40px}
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px;border-bottom:1px solid #e5e5ea;margin-bottom:16px}
+.nav-bar a{font-size:13px;color:#0071e3;text-decoration:none}
+.nav-bar .brand{font-weight:700;font-size:15px}
+.header{text-align:center;padding:20px 0 8px}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .subtitle{font-size:13px;color:#86868b}
+.usage-bar{background:#fff;border:1px solid #e5e5ea;border-radius:10px;padding:12px 14px;margin-top:16px;display:flex;align-items:center;justify-content:space-between}
+.usage-bar .remaining{font-size:13px}
+.usage-bar .remaining span{font-weight:700;color:#5856d6}
+textarea{width:100%;min-height:180px;border:1.5px solid #d2d2d7;border-radius:12px;padding:14px;font-size:15px;font-family:inherit;line-height:1.8;resize:vertical;background:#fff;outline:none;margin-top:16px}
+textarea:focus{border-color:#5856d6}
+textarea::placeholder{color:#aeaeb2}
+.char-count{text-align:right;font-size:12px;color:#aeaeb2;margin-top:4px}
+.btn-generate{width:100%;padding:14px;font-size:16px;font-weight:600;border:none;border-radius:12px;background:#5856d6;color:#fff;cursor:pointer;margin-top:16px}
+.btn-generate:active{transform:scale(.98)}
+.btn-generate:disabled{background:#b0ade0;cursor:not-allowed}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-generate.loading .spinner{display:block}
+.btn-generate.loading span{display:none}
+.result-section{margin-top:24px;display:none}
+.result-section.visible{display:block}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.result-header .label{font-size:14px;font-weight:600}
+.btn-copy{padding:6px 14px;font-size:13px;font-weight:500;border:1px solid #5856d6;border-radius:8px;background:#fff;color:#5856d6;cursor:pointer}
+.btn-copy.copied{background:#34c759;color:#fff;border-color:#34c759}
+.result-content{background:#fff;border:1px solid #e5e5ea;border-radius:12px;padding:20px;font-size:14px;line-height:1.9;white-space:pre-wrap;word-break:break-word}
+.error-msg{background:#fff2f0;border:1px solid #ffccc7;border-radius:10px;padding:12px 16px;font-size:14px;color:#cf1322;margin-top:16px;display:none}
+.error-msg.visible{display:block}
+.footer{text-align:center;padding:32px 0 20px;font-size:12px;color:#aeaeb2}
+</style>
+</head>
+<body>
+<div class="container">
+  <nav class="nav-bar"><span class="brand">🤖 AI工作助手</span><a href="/">← 返回首页</a></nav>
+  <div class="header"><h1>📊 AI数据分析解读</h1><div class="subtitle">上传数据，AI洞察趋势生成分析报告</div></div>
+
+  <textarea id="inputContent" placeholder="把你的数据粘贴到这里：&#10;&#10;支持格式：&#10;• Excel表格数据（复制粘贴）&#10;• 截图数据（文字描述也行）&#10;• CSV/表格文字&#10;• 销售数据、用户数据、运营数据&#10;&#10;示例：&#10;月份  销售额  用户数  转化率&#10;1月  12.5万  3500  3.2%&#10;2月  10.8万  3200  3.0%&#10;3月  15.2万  4100  3.5%&#10;&#10;AI会自动识别数据、分析趋势、生成洞察报告~"></textarea>
+  <div class="char-count"><span id="charCount">0</span> 字</div>
+
+  <button class="btn-generate" id="btnGenerate" onclick="generate()">
+    <span class="spinner"></span><span>📊 分析数据</span>
+  </button>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="result-section" id="resultSection">
+    <div class="result-header">
+      <span class="label">📋 分析报告</span>
+      <button class="btn-copy" id="btnCopy" onclick="copyResult()">📋 一键复制</button>
+    </div>
+    <div class="result-content" id="resultContent"></div>
+  </div>
+
+  <div class="footer">AI 分析仅供参考，重要决策请结合业务判断</div>
+</div>
+
+<script>
+document.getElementById('inputContent').addEventListener('input',function(){document.getElementById('charCount').textContent=this.value.length});
+
+async function generate(){
+var c=document.getElementById('inputContent').value.trim(),btn=document.getElementById('btnGenerate'),err=document.getElementById('errorMsg');
+if(!c){showError('请粘贴数据~');return}
+if(c.length<20){showError('数据太少啦，多粘贴一些数据效果更好~');return}
+err.classList.remove('visible');btn.classList.add('loading');btn.disabled=true;
+try{
+var r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:c})});
+var d=await r.json();
+if(d.error){showError(d.error)}else{
+document.getElementById('resultContent').textContent=d.result;
+document.getElementById('resultSection').classList.add('visible');
+document.getElementById('btnCopy').classList.remove('copied');document.getElementById('btnCopy').textContent='📋 一键复制';
+document.getElementById('resultSection').scrollIntoView({behavior:'smooth',block:'center'});
+}
+}catch(e){showError('网络异常')}
+btn.classList.remove('loading');btn.disabled=false;
+}
+
+function copyResult(){
+var t=document.getElementById('resultContent').textContent,b=document.getElementById('btnCopy');
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){b.classList.add('copied');b.textContent='✅ 已复制';setTimeout(function(){b.classList.remove('copied');b.textContent='📋 一键复制'},2000)})}
+else{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);b.classList.add('copied');b.textContent='✅ 已复制';setTimeout(function(){b.classList.remove('copied');b.textContent='📋 一键复制'},2000)}
+}
+function showError(m){var e=document.getElementById('errorMsg');e.textContent=m;e.classList.add('visible');setTimeout(function(){e.classList.remove('visible')},4000)}
+</script>
+</body>
+</html>

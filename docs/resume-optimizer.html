@@ -55,76 +55,40 @@ textarea::placeholder{color:#aeaeb2}
 .footer{text-align:center;padding:32px 0 20px;font-size:12px;color:#aeaeb2}
 </style>
 
+
 <script>
-// Auto-detect environment and route API calls
+// API routing: GitHub Pages needs backend proxy (CORS blocks direct DashScope calls)
+// So we detect environment and show appropriate message
 (function() {
   var isGH = location.hostname.includes('github.io');
-  var isLocal = location.hostname.includes('localhost');
+  window.API_BASE = isGH ? '' : '';
+  window.IS_GH = isGH;
   
-  window.API_BASE = isLocal ? '' : (isGH ? '' : '');
-  window.DASHSCOPE_KEY = 'sk-20e1483f727e40bc9785217be99986f7';
-  
-  // Override fetch for API calls to route correctly
-  var origFetch = window.fetch;
-  window.fetch = function(url, options) {
-    if (typeof url === 'string' && url.startsWith('/api/')) {
-      if (isGH) {
-        // On GitHub Pages, call DashScope directly
-        var body = JSON.parse(options.body);
-        return callDashScope(url, body);
+  if (isGH) {
+    // On GitHub Pages, API calls won't work due to CORS
+    // Override fetch to show helpful error
+    var origFetch = window.fetch;
+    window.fetch = function(url, options) {
+      if (typeof url === 'string' && url.startsWith('/api/')) {
+        return Promise.reject(new Error('GitHub Pages不支持API调用，请使用本地版'));
       }
-      // Local/Vercel: use the backend API
-      return origFetch(url, options);
-    }
-    return origFetch.apply(this, arguments);
-  };
-
-  async function callDashScope(apiPath, body) {
-    var model = 'qwen-plus';
-    var systemPrompt = '';
-    var userContent = body.content || '';
-    
-    if (apiPath === '/api/generate') {
-      var styles = {
-        professional: '你是职场汇报专家。将工作要点整理成专业周报。格式：标题+重点项目进展+日常工作推进+下周计划+本周感悟。直接输出周报。',
-        result: '你是成果导向型汇报专家。整理周报突出量化成果。直接输出。',
-        concise: '你是高效汇报专家。整理成极简周报，不超过5条。直接输出。',
-        tech: '你是技术团队周报助手。整理成技术风周报。直接输出。'
-      };
-      systemPrompt = styles[body.style] || styles.professional;
-    } else if (apiPath === '/api/minutes') {
-      systemPrompt = '你是会议纪要专家。整理会议记录：议题+讨论要点+决议+待办事项。直接输出。';
-    } else if (apiPath === '/api/resume') {
-      systemPrompt = '你是简历优化专家。STAR法则重写，突出量化成果。直接输出。';
-    } else if (apiPath === '/api/translate') {
-      systemPrompt = body.mode === 'zh2en' ? '中译英专家。翻译成地道英文。只输出译文。' : '英译中专家。翻译成流畅中文。只输出译文。';
-    } else if (apiPath === '/api/analyze') {
-      systemPrompt = '你是数据分析师。输出：数据概览+关键发现+趋势+异常+建议。直接输出。';
-    }
-    
-    var resp = await origFetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + window.DASHSCOPE_KEY
-      },
-      body: JSON.stringify({
-        model: model,
-        messages: [{role:'system',content:systemPrompt},{role:'user',content:userContent}],
-        temperature: 0.7,
-        max_tokens: 2000
-      })
-    });
-    var data = await resp.json();
-    return {
-      json: function() { return Promise.resolve({ result: data.choices[0].message.content }); }
+      return origFetch.apply(this, arguments);
     };
   }
 })();
 </script>
 
+
 </head>
 <body>
+
+<div id="gh-notice" style="display:none;background:#fff3cd;color:#856404;text-align:center;padding:8px;font-size:12px">
+  ⚠️ GitHub Pages不支持后端API，请使用本地版访问 <a href="http://localhost:3456" style="color:#0071e3">localhost:3456</a>
+</div>
+<script>
+if (location.hostname.includes('github.io')) document.getElementById('gh-notice').style.display='block';
+</script>
+
 <div class="container">
   <nav class="nav-bar">
     <span class="brand">🤖 AI工作助手</span>

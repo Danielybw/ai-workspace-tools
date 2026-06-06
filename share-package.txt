@@ -1,7 +1,7 @@
 ============================================
 🚀 AI工作助手 - 即刻分享包
 ============================================
-链接: https://weekly-report-ai-two.vercel.app
+链接: https://danielybw.github.io/ai-workspace-tools
 
 --- 朋友圈文案 ---
 做了一个AI办公工具箱，完全免费，分享给大家 👇
@@ -16,7 +16,7 @@
 每个工具每天免费3次，日常完全够用。
 好用的话欢迎赞赏支持，我会持续更新更多工具 🔧
 
-👉 https://weekly-report-ai-two.vercel.app
+👉 https://danielybw.github.io/ai-workspace-tools
 
 --- 微信群文案 ---
 分享一个我自己做的AI办公工具箱：
@@ -27,7 +27,7 @@
 🌐 翻译润色 → 中英互译+润色
 📊 数据分析 → 上传数据自动分析趋势
 
-全部免费，每天3次。链接：https://weekly-report-ai-two.vercel.app
+全部免费，每天3次。链接：https://danielybw.github.io/ai-workspace-tools
 
 --- 即刻/V2EX ---
 周末肝了个AI办公工具箱出来 🧰
@@ -42,6 +42,6 @@
 移动端适配，无需注册，即开即用。
 后续打算加PPT大纲生成、思维导图等。
 
-👉 https://weekly-report-ai-two.vercel.app
+👉 https://danielybw.github.io/ai-workspace-tools
 
 #独立开发者 #AI工具 #效率工具

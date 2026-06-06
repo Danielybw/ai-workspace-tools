@@ -1,0 +1,92 @@
+{
+  "cookies": [
+    {
+      "name": "tfstk",
+      "value": "gV8IsaaowLLwtdGKeJlaGoZrr1QE_fu4P71JiQUUwwQLe8dAQpWF8b05epXw89RFJWxM3IUe8DbzPwblyxkquqoHtabRvdVci9A9s_hN99hScyQlyxkZuqRHtaveJ7oEOCh1a_r89LBK1NCVByC8J_et1_XOyaQJeCh1ZOCdyapJ6f1lBTHm-P1ZotAIZHzTkZWGHBB_yzNNOMBxoOa8yF1Q3tdKmzUJ56sH7HxDPe_JvBJ10HMbRtOpmLfvpJHGUnRwJG_S08XW4BLeRaVufCsW83jW-jechHd6PwJIhuXvYCQOMLi4xCQCiiKVfJaW1U6CDeIsrbbB6_Q6DCl0b9Y68FIBRxZcdeAJ4GtgdAWy0C8dfKHa5LjWbejD8AUBHg-zut6diurlpz113fG_quWf3bCgxefZhMCG_xls1uR5v1f13fG_qujds1kq1fZyN",
+      "domain": ".goofish.com",
+      "path": "/",
+      "expires": 1796262017,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "xlly_s",
+      "value": "1",
+      "domain": ".goofish.com",
+      "path": "/",
+      "expires": 1780969217,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "cbc",
+      "value": "T2gACMoU5Bcw4L2wSiPHAe7Nq96uSVIoQ1Zos2Gd9_UoMuLGgkRLbsz2hsMnQglOAWU=",
+      "domain": ".ynuf.aliapp.org",
+      "path": "/",
+      "expires": 1812246017.629081,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://goofish.com",
+      "_crHasCrossSiteAncestor": true
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.goofish.com",
+      "localStorage": [
+        {
+          "name": "syfhs",
+          "value": "1720769874"
+        },
+        {
+          "name": "lswucn",
+          "value": "T2gAfNKawqy1TJPQnk0r5VRmBnXLQpT9sqPYWahb5W3vZXXNxjDv52u0NVrIgxUZpcY=@@1780710017"
+        },
+        {
+          "name": "ETLCD",
+          "value": "false"
+        },
+        {
+          "name": "_lib_auto_login_havana_storage_arms_api_key_",
+          "value": "3ian9u_autoLogin_9039d7d4b43"
+        },
+        {
+          "name": "auyst",
+          "value": "1780710017"
+        }
+      ]
+    },
+    {
+      "origin": "https://g.alicdn.com",
+      "localStorage": [
+        {
+          "name": "__xdomain_storage_plugin-survey-behavior-info",
+          "value": "[]"
+        },
+        {
+          "name": "__xdomain_storage_plugin-survey-show-times",
+          "value": "[]"
+        },
+        {
+          "name": "__xdomain_sessions",
+          "value": "{\"17807100174090.47855011307110396\":{\"timestamp\":1780710017409,\"url\":\"https://www.goofish.com/\"}}"
+        },
+        {
+          "name": "__xdomain_storage_plugin-unopen-survey-ids",
+          "value": "[]"
+        },
+        {
+          "name": "__xdomain_storage_plugin-survey-config-versions",
+          "value": "[{\"id\":4853,\"gmtModified\":\"2026-04-02T03:12:55.000Z\",\"pid\":\"idle_pc\"},{\"id\":4366,\"gmtModified\":\"2025-09-24T06:49:52.000Z\",\"pid\":\"idle_pc\"}]"
+        },
+        {
+          "name": "__xdomain_storage_plugin-survey-showed-info",
+          "value": "[]"
+        }
+      ]
+    }
+  ]
+}

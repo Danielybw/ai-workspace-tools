@@ -121,5 +121,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     <a href="https://weekly-report-ai-two.vercel.app">weekly-report-ai-two.vercel.app</a>
   </div>
 </div>
+
+<script>
+// Simple usage tracking
+fetch('/api/track', {method:'POST',body:JSON.stringify({page:'home',t:Date.now()})}).catch(()=>{});
+</script>
 </body>
 </html>

@@ -36,5 +36,23 @@ export const useBaziStore = defineStore('bazi', () => {
     localStorage.removeItem('bazi_history')
   }
 
-  return { currentResult, history, compute, deleteHistoryItem, clearHistory }
+  const points = ref(parseInt(localStorage.getItem('bazi_points') || '0'))
+
+  function addPoints(amount: number) {
+    points.value += amount
+    localStorage.setItem('bazi_points', String(points.value))
+  }
+
+  function deductPoints(amount: number): boolean {
+    if (points.value < amount) return false
+    points.value -= amount
+    localStorage.setItem('bazi_points', String(points.value))
+    return true
+  }
+
+  function isPaid(): boolean {
+    return localStorage.getItem('bazi_paid') === 'true'
+  }
+
+  return { currentResult, history, compute, deleteHistoryItem, clearHistory, points, addPoints, deductPoints, isPaid }
 })

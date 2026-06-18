@@ -1,0 +1,11 @@
+name = "bazi-ai-worker"
+compatibility_date = "2026-06-18"
+main = "index.ts"
+
+kv_namespaces = [
+  { binding = "BAZI_KV", id = "bazi-kv", preview_id = "bazi-kv-preview" }
+]
+
+[vars]
+DASHSCOPE_API_KEY = ""
+

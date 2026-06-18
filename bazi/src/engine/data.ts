@@ -150,4 +150,79 @@ export function getTiaoHou(dmIndex: number, monthBranch: number): { favorable: s
   }
   return { favorable: ['火', '土'], unfavorable: ['水', '金'] }
 }
+// ===== 纳音表 (六十甲子→五行) =====
+// 60甲子纳音: index = stemIndex*6 + floor(branchIndex/2)
+// 每对干支（如甲子乙丑）一组
+export const NAYIN: string[] = [
+  '海中金', '炉中火', '大林木', '路旁土', '剑锋金', '山头火', // 甲子→甲戌
+  '涧下水', '城头土', '白蜡金', '杨柳木', '泉中水', '屋上土', // 丙子→丙戌
+  '霹雳火', '松柏木', '长流水', '沙中金', '山下火', '平地木', // 戊子→戊戌
+  '壁上土', '金箔金', '覆灯火', '天河水', '大驿土', '钗钏金', // 庚子→庚戌
+  '桑柘木', '大溪水', '沙中土', '天上火', '石榴木', '大海水', // 壬子→壬戌
+]
+
+/** 获取某干支的纳音五行 (传入stemIndex 0-9, branchIndex 0-11) */
+export function getNaYin(stemIndex: number, branchIndex: number): string {
+  const pairIndex = Math.floor(stemIndex / 2) * 6 + Math.floor(branchIndex / 2)
+  const groupIndex = pairIndex % 30 // same for both yang/yin pairs in same cycle
+  return NAYIN[groupIndex]
+}
+
+// ===== 节气→月支映射 =====
+// 24节气中，"节"决定月份：小寒(0)→丑, 立春(2)→寅, 惊蛰(4)→卯, 清明(6)→辰, 立夏(8)→巳, 芒种(10)→午
+// 小暑(12)→未, 立秋(14)→申, 白露(16)→酉, 寒露(18)→戌, 立冬(20)→亥, 大雪(22)→子
+/** 节气索引 (太阳黄经15°的整数倍) 对应的月支 */
+export const SOLAR_TERM_TO_BRANCH: Record<number, number> = {
+  0: 1,   // 小寒→丑
+  2: 2,   // 立春→寅
+  4: 3,   // 惊蛰→卯
+  6: 4,   // 清明→辰
+  8: 5,   // 立夏→巳
+  10: 6,  // 芒种→午
+  12: 7,  // 小暑→未
+  14: 8,  // 立秋→申
+  16: 9,  // 白露→酉
+  18: 10, // 寒露→戌
+  20: 11, // 立冬→亥
+  22: 0,  // 大雪→子
+}
+
+/** "节"的节气索引列表（奇数索引为节，0=小寒(节), 2=立春(节), 4=惊蛰...） */
+export const JIE_TERM_INDEXES = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+
+// ===== 地支六合、六冲、三合 =====
+export const BRANCH_LIUHE: Record<number, number> = {
+  0: 1, 1: 0,  // 子丑合
+  2: 11, 11: 2, // 寅亥合
+  3: 10, 10: 3, // 卯戌合
+  4: 9, 9: 4,   // 辰酉合
+  5: 8, 8: 5,   // 巳申合
+  6: 7, 7: 6,   // 午未合
+}
+
+export const BRANCH_LIUCHONG: Record<number, number> = {
+  0: 6, 6: 0,   // 子午冲
+  1: 7, 7: 1,   // 丑未冲
+  2: 8, 8: 2,   // 寅申冲
+  3: 9, 9: 3,   // 卯酉冲
+  4: 10, 10: 4, // 辰戌冲
+  5: 11, 11: 5, // 巳亥冲
+}
+
+// ===== 天干五合、相克 =====
+export const STEM_HE: Record<number, number> = {
+  0: 5, 5: 0,   // 甲己合
+  1: 6, 6: 1,   // 乙庚合
+  2: 7, 7: 2,   // 丙辛合
+  3: 8, 8: 3,   // 丁壬合
+  4: 9, 9: 4,   // 戊癸合
+}
+
+export const STEM_KE: Record<number, number[]> = {
+  0: [5, 4], 1: [5, 4],  // 甲乙克戊己(土)
+  2: [8, 9], 3: [8, 9],  // 丙丁克庚辛(金)
+  4: [0, 1], 5: [0, 1],  // 戊己克壬癸(水)
+  6: [2, 3], 7: [2, 3],  // 庚辛克甲乙(木)
+  8: [6, 7], 9: [6, 7],  // 壬癸克丙丁(火)
+}
 

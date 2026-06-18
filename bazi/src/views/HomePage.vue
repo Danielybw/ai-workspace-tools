@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { useBaziStore } from '@/stores/bazi'
 import BirthInputForm from '@/components/BirthInputForm.vue'
 import type { BirthInput } from '@/engine'
+import NavBar from '@/components/NavBar.vue'
+const points = computed(() => parseInt(localStorage.getItem('bazi_points') || '0'))
 
 const router = useRouter()
 const store = useBaziStore()
@@ -31,6 +33,7 @@ function clearAllHistory() {
 <template>
   <div>
     <!-- Hero -->
+    <NavBar />
     <div class="hero">
       <div class="hero-icon">☯</div>
       <h1>八字排盘</h1>
@@ -41,6 +44,12 @@ function clearAllHistory() {
       </p>
     </div>
 
+    <!-- Points -->
+    <div style="text-align:center; margin:12px 0;">
+      <span style="display:inline-flex; align-items:center; gap:6px; background:#FFF3E0; padding:6px 14px; border-radius:20px; font-size:13px; cursor:pointer;" @click="$router.push('/pay')">
+        🪙 {{ points }} 积分
+      </span>
+    </div>
     <!-- Input form -->
     <BirthInputForm @calculate="onCalculate" />
 

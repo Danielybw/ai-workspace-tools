@@ -7,6 +7,7 @@ import FiveElements from '@/components/FiveElements.vue'
 import TenGods from '@/components/TenGods.vue'
 import Interpretation from '@/components/Interpretation.vue'
 import html2canvas from 'html2canvas'
+import NavBar from '@/components/NavBar.vue'
 
 const router = useRouter()
 const store = useBaziStore()
@@ -40,6 +41,7 @@ function goBack() { router.push('/') }
 
 <template>
   <div v-if="result">
+    <NavBar />
     <div id="result-card-area">
       <div class="page-header">
         <button class="header-back" @click="goBack">←</button>
@@ -103,6 +105,7 @@ function goBack() { router.push('/') }
         <div class="share-section">
           <button class="share-btn" @click="goBack">再测一个</button>
           <button class="share-btn" @click="saveCard">💾 保存分享图片</button>
+          <button class="share-btn" @click="router.push('/dayun')">📈 大运流年</button>
         </div>
       </div>
     </div>

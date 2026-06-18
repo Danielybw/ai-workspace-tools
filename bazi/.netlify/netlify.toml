@@ -1,0 +1,28 @@
+plugins = []
+headers = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "/Users/yubangwang/Desktop/Crazy AI/bazi/dist"
+publishOrigin = "ui"
+commandOrigin = "ui"
+base = "/Users/yubangwang/Desktop/Crazy AI/bazi"
+command = "npm run build"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]

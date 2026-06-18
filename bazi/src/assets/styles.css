@@ -1,0 +1,397 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #8B4513;
+  --primary-light: #D2691E;
+  --bg: #FFF8F0;
+  --card-bg: #FFFFFF;
+  --text: #3C2415;
+  --text-light: #8B7355;
+  --border: #E8DDD0;
+  --accent: #CD853F;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(60, 36, 21, 0.08);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.app-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 20px 0 10px;
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: auto;
+}
+
+/* Card */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.card + .card { margin-top: 16px; }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Input */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+}
+
+.form-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--primary-light);
+}
+
+.form-select {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  text-decoration: none;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  width: 100%;
+  padding: 14px;
+  font-size: 17px;
+}
+
+.btn-primary:hover { opacity: 0.95; }
+
+.btn-secondary {
+  background: var(--border);
+  color: var(--text);
+}
+
+.btn-link {
+  background: none;
+  color: var(--primary-light);
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* Pillars */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.pillar-card {
+  text-align: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.pillar-label {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 6px;
+}
+
+.pillar-stem {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+.pillar-branch {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary-light);
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.pillar-ten-god {
+  font-size: 12px;
+  color: var(--accent);
+  margin-top: 4px;
+}
+
+.pillar-full {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* Five Elements Bar */
+.element-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.element-icon { font-size: 18px; width: 28px; text-align: center; }
+
+.element-name { width: 28px; font-size: 14px; font-weight: 600; }
+
+.element-bar-wrap {
+  flex: 1;
+  height: 20px;
+  background: #F0EBE5;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.element-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 6px;
+  min-width: 20px;
+}
+
+.element-bar-text {
+  font-size: 10px;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.element-missing {
+  color: var(--text-light);
+  font-size: 13px;
+  text-align: center;
+  padding: 8px;
+  background: #FFF3E0;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+/* Ten Gods */
+.ten-god-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.ten-god-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--bg);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.ten-god-name { color: var(--primary-light); font-weight: 500; }
+
+/* Interpretation */
+.interp-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.interp-text p { margin-bottom: 8px; }
+
+/* Day master analysis */
+.dm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.dm-item {
+  padding: 8px 10px;
+  background: var(--bg);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.dm-item-label { color: var(--text-light); font-size: 12px; }
+.dm-item-value { font-weight: 500; margin-top: 2px; }
+.dm-yes { color: #4CAF50; }
+.dm-no { color: #999; }
+
+/* Share button */
+.share-section {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.share-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.share-btn:hover { border-color: var(--primary-light); background: var(--bg); }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 60px 20px 30px;
+}
+
+.hero-icon { font-size: 64px; margin-bottom: 16px; }
+
+.hero h1 {
+  font-size: 28px;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.hero p {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+/* History */
+.history-list {
+  margin-top: 16px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.history-item:hover { border-color: var(--primary-light); background: #FFFDF8; }
+
+.history-info { font-size: 13px; }
+
+.history-date { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+.history-del {
+  background: none;
+  border: none;
+  color: #CCC;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+}
+
+.history-del:hover { color: #FF5722; }
+
+/* Page header */
+.page-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  margin-bottom: 8px;
+}
+
+.header-back {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px 4px 0;
+  color: var(--text);
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .app-container { padding: 12px; }
+  .pillars-grid { gap: 6px; }
+  .pillar-stem, .pillar-branch { font-size: 24px; }
+  .hero h1 { font-size: 24px; }
+  .form-row { flex-direction: column; gap: 0; }
+  .ten-god-grid { grid-template-columns: 1fr; }
+  .dm-grid { grid-template-columns: repeat(2, 1fr); }
+}
